@@ -77,4 +77,4 @@ with open(output_path,'w', encoding='utf-8') as output_files:
     
     output_files.write('</body></html>')
     
-print(f"Tổng thời gian: {total_time:.2f} s")
+print(f"Tổng thời gian: {Fore.GREEN}{total_time:.2f} s")

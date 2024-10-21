@@ -1,0 +1,32 @@
+
+ 
+Lesson 1: Biến - Variation: 
+    - Định nghĩa
+    - Quy tắc đặt tên
+    - Kiểu biến
+        + string (str)
+        + integer (int)
+        + float (float)
+        + boolean (bool)
+        + list (list)
+        + tuple (tuple)
+        + dictionary (dict)
+        + set (set)
+
+
+ 
+Lesson 2: Toán tử - Operators
+    - Các toán tử số học (+, -, *, /, %, **, //)
+    - Toán tử gán (==, +=, -=, *=, /=, %=, //=, **=, &=, |=, ^=, >>=, <<=)
+    - Toán tử so sánh (==, !=, >, <, >=, <=)
+    - Các toán tử logic (AND, OR, NOT)
+    - Toán tử danh tính (is, isnot)
+    - Người điều hành thành viên (trong, không trong)
+    - Toán tử bitwise (&, |, ^, ~, <<, >>)
+    
+
+Lesson 3: Control Flow
+    - Lệnh Điều kiện (Conditional statements)
+    - Vòng lặp (Loop)
+        + For
+        + While
