@@ -1,5 +1,10 @@
 
- 
+Lesson 0: 
+    Installation
+        Python
+        IDE (VSCode)
+    Introduction
+        VSCode
 Lesson 1: Biến - Variation: 
     - Định nghĩa
     - Quy tắc đặt tên
@@ -30,3 +35,14 @@ Lesson 3: Control Flow
     - Vòng lặp (Loop)
         + For
         + While
+
+Lession 4: Hàm và kiểu List
+    - Giới thiệu + định nghĩa Hàm (function)
+    - Tham số + giá trị trả về
+    - List 
+        + Tạo danh sách + In danh sách
+        + Thêm, sửa, xóa phần tử trong danh sách
+        + Vòng lặp với danh sách
+
+Lession 5: Xử lý chuỗi (String)
+    - 
