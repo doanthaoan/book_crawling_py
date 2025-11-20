@@ -21,6 +21,3 @@ elif (dap_an_1 == "B"):
 else:
     thong_bao_1 = "Bạn chọn đáp án câu số 1 không phải là A, B, C, D. Sai yêu cầu!"
     diem = diem - 1
-    
-
-

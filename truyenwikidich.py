@@ -4,6 +4,7 @@ import time
 import random
 from colorama import Fore, Back, Style, init
 import os
+import html
 
 init(autoreset=True)
 
@@ -33,11 +34,51 @@ soup = BeautifulSoup(html_content, 'html.parser')
 chapter_tags = soup.select('li.chapter-name > a')
 
 url_list = [a['href'] for a in chapter_tags if a.has_attr('href')]
-
+url_list = [
+    "https://dichngay.com/translate?u=https%3A%2F%2Fwww.52shuku.vip%2Fjiakong%2Fb%2FbjP0W_2.html&bid=Y5xr5FS4CBSVnOB7&un="
+]
 # print(url_list)
-
-# Extract content & save to html file
 total_time = 0
+# Extract content & save to html file
+def clean_text(text):
+    # Xóa NULL bytes (\x00) và các ký tự điều khiển không hợp lệ trong XML
+    cleaned_text = re.sub(r'[\x00-\x1F\x7F]', '', text)
+    return cleaned_text
+
+def append_to_docx(docx_filename, chapter_title, chapter_content):
+    # Kiểm tra xem file đã tồn tại chưa
+    if os.path.exists(docx_filename):
+        doc = Document(docx_filename)  # Mở file nếu tồn tại
+    else:
+        doc = Document()  # Tạo tài liệu mới nếu chưa có file
+    
+    doc.add_heading(clean_text(chapter_title.get_text()), level=1)
+    
+    # Thêm nội dung mới vào tài liệu
+    for paragraph in chapter_content:
+        doc.add_paragraph(clean_text(paragraph.get_text()))
+    
+    # Lưu lại tài liệu ngay lập tức
+    try:    
+        doc.save(docx_filename)
+        print(f"{Fore.GREEN}Lưu thành công DOCX {Fore.YELLOW}{chapter_title.get_text()}")
+    except PermissionError:
+        print(f"{Fore.RED}Lỗi: Không thể ghi file '{docx_filename}' do quyền hạn hoặc file đang được sử dụng.")
+    except FileNotFoundError:
+        print(f"{Fore.RED}Lỗi: Thư mục đích không tồn tại. Kiểm tra lại đường dẫn lưu file.")
+    except Exception as e:
+        print(f"{Fore.RED}Đã có lỗi xảy ra khi lưu file: {e}")
+
+# Mark the new success log
+with open(success_log_path, 'a') as success_log:
+    success_log.write(f"\n=====================\n{time.strftime('%X %x')}: START NEW\n=====================\n")
+# Mark the new fail log
+with open(failure_log_path, 'a') as failure_log:
+    failure_log.write(f"\n=====================\n{time.strftime('%X %x')}: START NEW\n=====================\n")
+
+success_counter = 0
+fail_counter = 0    
+
 with open(output_path,'w', encoding='utf-8') as output_files:
     output_files.write('<html><body>\n')
     
@@ -45,21 +86,37 @@ with open(output_path,'w', encoding='utf-8') as output_files:
         start_time = time.time()
         try:
             response = requests.get(url)
-            
+            # print(response.text)
             if response.status_code == 200:
                 html_content = response.text
                 soup = BeautifulSoup(html_content, 'html.parser')
                 
-                chapter_title = soup.findAll('p', {'class', 'book-title'})[1]
-                chapter_content = soup.find('div', {'class','content-body-wrapper'})
                 
-                output_files.write(f"<h1>{chapter_title.get_text()}</h1>\n")
+                iframe = soup.find('iframe')
+                # decoded_content = html.unescape(iframe)
+                inner_soup = BeautifulSoup(iframe["srcdoc"], 'html.parser')
+                
+                print(inner_soup.find('article', {'class','article-content'}))
+                chapter_title = inner_soup.find('h1', {'class', 'article-title'})
+                chapter_content = inner_soup.find('article', {'class','article-content'})
+                # print(iframe.decode_contents.find('h1', {'class', 'article-title'}))
+                # output_files.write(f"<h1>{chapter_title.get_text()}</h1>\n")
+                output_files.write(f"{str(chapter_title)}\n")
                 output_files.write(str(chapter_content))
+                # DOCX
+                docx_content = chapter_content.findAll('p')
+                append_to_docx(output_path_docx, chapter_title, docx_content)
                 
-                print(f"{Fore.GREEN}Lưu thành công {Fore.YELLOW}{chapter_title.get_text()}: {Fore.WHITE}{url}\n")
+                # doc.add_heading(clean_text(chapter_title.get_text()), level=1)
                 
+                # for paragraph in docx_content:
+                #     doc.add_paragraph(clean_text(paragraph.get_text()))
+                
+                success_counter += 1
+                print(f"{Fore.GREEN}Lưu thành công HTML {Fore.YELLOW}{chapter_title.get_text()}: {Fore.WHITE}{url}")
+                print(f"{Fore.WHITE}Tiến độ: {Fore.GREEN}{index+1}/{len(url_list)}")
                 with open(success_log_path, 'a') as success_log:
-                    success_log.write(f"{url}\n")
+                    success_log.write(f"{time.strftime('%X %x')}: {url}\n")
             else:
                 print(f"{Fore.RED}Không thể truy cập {Fore.WHITE}{url}. Mã lỗi: {response.status_code}")
                 with open(failure_log_path, 'a') as failure_log:

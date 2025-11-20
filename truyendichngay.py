@@ -1,10 +1,10 @@
 import requests
-from requests.cookies import RequestsCookieJar
 from bs4 import BeautifulSoup
 import time
 import random
 from colorama import Fore, Back, Style, init
 import os
+import html
 from docx import Document
 import re
 
@@ -12,7 +12,7 @@ init(autoreset=True)
 
 BOOK_PATH = "truyen"
 LOGS_PATH = "logs"
-BOOK_DOMAIN = 'https://truyenwikidich.net'
+BOOK_DOMAIN = 'https://dichngay.com'
 
 if not os.path.exists(BOOK_PATH):
     os.makedirs(BOOK_PATH)
@@ -31,21 +31,20 @@ output_path_docx = os.path.join(BOOK_PATH, output_name_docx)
 success_log_path = os.path.join(LOGS_PATH, success_log_name)
 failure_log_path = os.path.join(LOGS_PATH, failure_log_name)
 file_path = os.path.join('book_source', file_name)
-# file_path = 'C:/Users/hoadk/Downloads/tctg-2.html'
 
 with open(file_path, 'r', encoding='utf-8') as file:
     html_content = file.read()
 soup = BeautifulSoup(html_content, 'html.parser')
 
-chapter_tags = soup.select('li.chapter-name > a')
+chapter_tags = soup.select('li.mulu > a')
 
 url_list = [a['href'] for a in chapter_tags if a.has_attr('href')]
-
+# url_list = [
+#     "https://dichngay.com/translate?u=https%3A%2F%2Fwww.52shuku.vip%2Fjiakong%2Fb%2FbjP0W_3.html&bid=Y5xr5FS4CBSVnOB7&un="
+# ]
 # print(url_list)
-
-# Extract content & save to html file
 total_time = 0
-
+# Extract content & save to html file
 def clean_text(text):
     # Xóa NULL bytes (\x00) và các ký tự điều khiển không hợp lệ trong XML
     cleaned_text = re.sub(r'[\x00-\x1F\x7F]', '', text)
@@ -84,24 +83,9 @@ with open(failure_log_path, 'a') as failure_log:
 
 success_counter = 0
 fail_counter = 0    
-# Tạo cookie jar để lưu trữ cookies
-jar = RequestsCookieJar()
-jar.set("_uidcms", "1727296305525100860", path="/", domain=".truyenwikidich.net")
-jar.set("_ga", "GA1.1.517054152.1729517088", path="/", domain=".truyenwikidich.net")
-jar.set("_ga_EGJYZDHJEC", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
-jar.set("_ga_YCSZZTM0SE", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
-jar.set("__RC", "4", path="/", domain=".truyenwikidich.net")
-# Thay express id mới nếu cookie hết hạn
-jar.set("express.sid", "s:u-tTfvj5W6YjWi3F1h4BI2w3VrbMYabP.VDGR8BG22iKE6aLFQgdBUD22mVY428l0+E3LdG5sDEM", path="/", domain=".truyenwikidich.net")
-jar.set("__UF", "-1", path="/", domain=".truyenwikidich.net")
-jar.set("__R", "1", path="/", domain=".truyenwikidich.net")
-jar.set("__uif", "__uid%3A6172963001952460733%7C__create%3A1727296300", path="/", domain=".truyenwikidich.net")
-jar.set("__tb", "0", path="/", domain=".truyenwikidich.net")
-jar.set("rigelcdp-session-id", "dc62c9a9-5010-40e2-bfdd-fb33191a1bdb", path="/", domain=".truyenwikidich.net")
-jar.set("__tr_geo", "{%22country%22:{%22name%22:%22Vietnam%22%2C%22code%22:%22VN%22}%2C%22city%22:%22Hanoi%22}", path="/", domain=".truyenwikidich.net")
-jar.set("bs_onshow", "1", path="/", domain=".truyenwikidich.net")
+
 with open(output_path_html,'w', encoding='utf-8') as output_files:
-    output_files.write('<html><body>\n')    
+    output_files.write('<html><body>\n')
     
     for index, url in enumerate(url_list):
         start_time = time.time()
@@ -109,25 +93,30 @@ with open(output_path_html,'w', encoding='utf-8') as output_files:
             url = BOOK_DOMAIN + url
         try:
             print(f"=== Bắt đầu tải chương: \n{Fore.YELLOW}{url} ===")
-            
-            response = requests.get(url, cookies=jar)
+            response = requests.get(url)
             end_request =  time.time()
             request_time = end_request - start_time
             print(f"Request time: {request_time:.2f} s")
-            
+            # print(response.text)
             if response.status_code == 200:
                 html_content = response.text
                 soup = BeautifulSoup(html_content, 'html.parser')
                 
-                chapter_title = soup.find_all('p', {'class', 'book-title'})[1]
-                chapter_content = soup.find('div', {'class','content-body-wrapper'})
+                iframe = soup.find('iframe')
+                # decoded_content = html.unescape(iframe)
+                inner_soup = BeautifulSoup(iframe["srcdoc"], 'html.parser')
                 
+                # print(inner_soup.find('article', {'class','article-content'}))
+                chapter_title = inner_soup.find('h1', {'class', 'article-title'})
+                chapter_content = inner_soup.find('article', {'class','article-content'})
+               
                 # HTML
-                output_files.write(f"<h1>{chapter_title.get_text()}</h1>\n")
+                output_files.write(f"{str(chapter_title)}\n")
                 output_files.write(str(chapter_content))
-                
                 # DOCX
                 docx_content = chapter_content.find_all('p')
+                [[a.replace_with(" " + a.get_text()) for a in p.find_all('a')] for p in docx_content]
+
                 append_to_docx(output_path_docx, chapter_title, docx_content)
                 
                 # doc.add_heading(clean_text(chapter_title.get_text()), level=1)
@@ -141,12 +130,10 @@ with open(output_path_html,'w', encoding='utf-8') as output_files:
                 with open(success_log_path, 'a') as success_log:
                     success_log.write(f"{time.strftime('%X %x')}: {url}\n")
             else:
-                fail_counter += 1
                 print(f"{Fore.RED}Không thể truy cập {Fore.WHITE}{url}. Mã lỗi: {response.status_code}")
                 with open(failure_log_path, 'a') as failure_log:
                     failure_log.write(f"{url}\n")
         except requests.exceptions.RequestException as e:
-            fail_counter += 1
             print(f"{Fore.RED}Lỗi khi truy cập {Fore.WHITE}{url}: {e}")
             with open(failure_log_path, 'a') as failure_log:
                     failure_log.write(f"{url}\n")
@@ -156,12 +143,7 @@ with open(output_path_html,'w', encoding='utf-8') as output_files:
         duration = end_time - start_time
         total_time += duration
         print(f"Thời gian xử lý: {duration:.2f} s\n")
+    
     output_files.write('</body></html>')
-    print(f"{Fore.GREEN}Lưu file html thành công")
-print(f"Thời gian lưu HTML & chuẩn bị file docx: {Fore.GREEN}{total_time:.2f} s\n")
-print("=================\n"
-      + "TỔNG KẾT\n"
-      + "================")
-print(f"{Fore.GREEN}Thành công: {success_counter}/{len(url_list)}")
-print(f"{Fore.RED}Thất bại: {fail_counter}/{len(url_list)}")
-
+    
+print(f"Tổng thời gian: {Fore.GREEN}{total_time:.2f} s")

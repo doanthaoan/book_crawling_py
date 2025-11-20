@@ -3,5 +3,11 @@
 # b = input("nhap so b: ")
 # c = a + b
 # print(f"{a} + {b} = " + str(c))
-print(3 + 2)
-print("3" + "2")
+a = 3
+string1 = "Ten toi la Doan Bao Ky"
+
+hoa_qua = ["chuối", "cam", ""] 
+a = 1
+print(a + 2)
+# print("3" + "2")
+

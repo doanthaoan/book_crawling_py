@@ -1,20 +1,22 @@
 print("Xin chào PY!")
 
-name = "Doan Bao Ky" 
+name = input("Vui long nhap ten ban: ")
 year_of_birth = 2012 
 current_year = 2024
 age = 6
 PI = 3.14 
 a = 0
 a = current_year - year_of_birth
-if a == 12:
-    print("Gia tri cua a dung", a)
-    print("Tuoi cua toi dung bang", a)
-elif a > 12:
-    print("Gia tri cua a khac voi so tuoi cua toi")
-    print("Vui long thay doi gia tri a")
-else: 
-    print("A nho hon 12")
+
+print('Xin chao', name, "!")
+# if a == 12:
+#     print("Gia tri cua a dung", a)
+#     print("Tuoi cua toi dung bang", a)
+# elif a > 12:
+#     print("Gia tri cua a khac voi so tuoi cua toi")
+#     print("Vui long thay doi gia tri a")
+# else: 
+#     print("A nho hon 12") 
 
 # print("tentoila:", name)
 # print(type(PI))
