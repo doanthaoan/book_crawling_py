@@ -8,6 +8,8 @@ import os
 from docx import Document
 import re
 
+import config
+
 init(autoreset=True)
 
 BOOK_PATH = "truyen"
@@ -86,18 +88,19 @@ success_counter = 0
 fail_counter = 0    
 # Tạo cookie jar để lưu trữ cookies
 jar = RequestsCookieJar()
-jar.set("_uidcms", "1727296305525100860", path="/", domain=".truyenwikidich.net")
-jar.set("_ga", "GA1.1.517054152.1729517088", path="/", domain=".truyenwikidich.net")
-jar.set("_ga_EGJYZDHJEC", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
-jar.set("_ga_YCSZZTM0SE", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
-jar.set("__RC", "4", path="/", domain=".truyenwikidich.net")
+jar.set("_uidcms", config.TRUYENWIKI['uidcms'], path="/", domain=".truyenwikidich.net")
+jar.set("_ga", config.TRUYENWIKI['ga'], path="/", domain=".truyenwikidich.net")
 # Thay express id mới nếu cookie hết hạn
-jar.set("express.sid", "s:u-tTfvj5W6YjWi3F1h4BI2w3VrbMYabP.VDGR8BG22iKE6aLFQgdBUD22mVY428l0+E3LdG5sDEM", path="/", domain=".truyenwikidich.net")
+jar.set("express.sid", config.TRUYENWIKI['express_sid'], path="/", domain=".truyenwikidich.net")
+jar.set("__uif", config.TRUYENWIKI['uif'], path="/", domain=".truyenwikidich.net")
+# jar.set("rigelcdp-session-id", config.TRUYENWIKI['rigelcdp_session_id'], path="/", domain=".truyenwikidich.net")
+# jar.set("_ga_EGJYZDHJEC", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
+# jar.set("_ga_YCSZZTM0SE", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
+jar.set("__RC", "4", path="/", domain=".truyenwikidich.net")
 jar.set("__UF", "-1", path="/", domain=".truyenwikidich.net")
 jar.set("__R", "1", path="/", domain=".truyenwikidich.net")
-jar.set("__uif", "__uid%3A6172963001952460733%7C__create%3A1727296300", path="/", domain=".truyenwikidich.net")
 jar.set("__tb", "0", path="/", domain=".truyenwikidich.net")
-jar.set("rigelcdp-session-id", "dc62c9a9-5010-40e2-bfdd-fb33191a1bdb", path="/", domain=".truyenwikidich.net")
+
 jar.set("__tr_geo", "{%22country%22:{%22name%22:%22Vietnam%22%2C%22code%22:%22VN%22}%2C%22city%22:%22Hanoi%22}", path="/", domain=".truyenwikidich.net")
 jar.set("bs_onshow", "1", path="/", domain=".truyenwikidich.net")
 with open(output_path_html,'w', encoding='utf-8') as output_files:
