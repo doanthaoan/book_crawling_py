@@ -14,7 +14,7 @@ init(autoreset=True)
 
 BOOK_PATH = "truyen"
 LOGS_PATH = "logs"
-BOOK_DOMAIN = 'https://truyenwikidich.net'
+BOOK_DOMAIN = config.TRUYENWIKI['book_domain']
 
 if not os.path.exists(BOOK_PATH):
     os.makedirs(BOOK_PATH)
@@ -88,21 +88,21 @@ success_counter = 0
 fail_counter = 0    
 # Tạo cookie jar để lưu trữ cookies
 jar = RequestsCookieJar()
-jar.set("_uidcms", config.TRUYENWIKI['uidcms'], path="/", domain=".truyenwikidich.net")
-jar.set("_ga", config.TRUYENWIKI['ga'], path="/", domain=".truyenwikidich.net")
+jar.set("_uidcms", config.TRUYENWIKI['uidcms'], path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("_ga", config.TRUYENWIKI['ga'], path="/", domain=config.TRUYENWIKI['cookie_domain'])
 # Thay express id mới nếu cookie hết hạn
-jar.set("express.sid", config.TRUYENWIKI['express_sid'], path="/", domain=".truyenwikidich.net")
-jar.set("__uif", config.TRUYENWIKI['uif'], path="/", domain=".truyenwikidich.net")
-# jar.set("rigelcdp-session-id", config.TRUYENWIKI['rigelcdp_session_id'], path="/", domain=".truyenwikidich.net")
-# jar.set("_ga_EGJYZDHJEC", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
-# jar.set("_ga_YCSZZTM0SE", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=".truyenwikidich.net")
-jar.set("__RC", "4", path="/", domain=".truyenwikidich.net")
-jar.set("__UF", "-1", path="/", domain=".truyenwikidich.net")
-jar.set("__R", "1", path="/", domain=".truyenwikidich.net")
-jar.set("__tb", "0", path="/", domain=".truyenwikidich.net")
+jar.set("express.sid", config.TRUYENWIKI['express_sid'], path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("__uif", config.TRUYENWIKI['uif'], path="/", domain=config.TRUYENWIKI['cookie_domain'])
+# jar.set("rigelcdp-session-id", config.TRUYENWIKI['rigelcdp_session_id'], path="/", domain=config.TRUYENWIKI['cookie_domain'])
+# jar.set("_ga_EGJYZDHJEC", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=config.TRUYENWIKI['cookie_domain'])
+# jar.set("_ga_YCSZZTM0SE", "GS2.1.s1754680322`$o4`$g0`$t1754680325`$j57`$l0`$h0", path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("__RC", "4", path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("__UF", "-1", path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("__R", "1", path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("__tb", "0", path="/", domain=config.TRUYENWIKI['cookie_domain'])
 
-jar.set("__tr_geo", "{%22country%22:{%22name%22:%22Vietnam%22%2C%22code%22:%22VN%22}%2C%22city%22:%22Hanoi%22}", path="/", domain=".truyenwikidich.net")
-jar.set("bs_onshow", "1", path="/", domain=".truyenwikidich.net")
+jar.set("__tr_geo", "{%22country%22:{%22name%22:%22Vietnam%22%2C%22code%22:%22VN%22}%2C%22city%22:%22Hanoi%22}", path="/", domain=config.TRUYENWIKI['cookie_domain'])
+jar.set("bs_onshow", "1", path="/", domain=config.TRUYENWIKI['cookie_domain'])
 with open(output_path_html,'w', encoding='utf-8') as output_files:
     output_files.write('<html><body>\n')    
     

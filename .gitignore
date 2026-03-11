@@ -4,3 +4,9 @@ book_source/*
 Granit
 OICA
 split_files
+# Python cache
+__pycache__/
+*.pyc
+
+# Ignore .env file containing sensitive information
+.env
