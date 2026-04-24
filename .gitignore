@@ -5,7 +5,7 @@ Granit
 OICA
 split_files
 # Python cache
-__pycache__/
+__pycache__/*
 *.pyc
 
 # Ignore .env file containing sensitive information
